@@ -1,0 +1,92 @@
+---
+title: "Demonstration of a Robust ANOVA Analysis Function in R"
+author: "KS"
+date: "2025-07-30"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## ANOVA Pipleine Demo with Iris dataset
+
+This document demonstrates a simple, robust R function for automating a one-way ANOVA. The function is designed to be a simplified example of the core logic used in a more complex statistical analysis pipeline. The goal is to showcase a function that is not only effective for analysis but also includes built-in data validation and graceful error handling.
+
+### Define the Analysis Function
+
+The core of this demo is the run_anova_analysis function. It takes a dataframe and column names as input, validates the data, runs the analysis, and returns a clean, tidy result using the broom package.
+
+```{r}
+# Load necessary libraries
+library(dplyr)
+library(broom)
+library(tibble)
+
+# --- Define the Analysis Function ---
+run_anova_analysis <- function(data, dv_col, group_col) {
+  
+  # 1. Validate the input data
+  # Check if the grouping variable has at least two levels.
+  if (n_distinct(data[[group_col]]) < 2) {
+    return(tibble(error = "Grouping variable must have at least two levels."))
+  }
+  
+  tryCatch({
+    # 2. Run the ANOVA
+    formula_str <- as.formula(paste(dv_col, "~", group_col))
+    aov_model <- aov(formula_str, data = data)
+    
+    # 3. Tidy the output
+    tidy_results <- broom::tidy(aov_model)
+    
+    return(tidy_results)
+    
+  }, error = function(e) {
+    # Handle any other unexpected errors gracefully
+    return(tibble(error = as.character(e)))
+  })
+}
+
+print("Function 'run_anova_analysis' created successfully.")
+```
+
+### Demonstrate a Successful Analysis
+
+First, we test the function on the complete, built-in iris dataset. The goal is to determine if there is a statistically significant difference in Sepal.Length among the three different Species.
+
+```{r}
+# --- Demonstrate a successful analysis ---
+
+successful_result <- run_anova_analysis(
+  data = iris, 
+  dv_col = "Sepal.Length", 
+  group_col = "Species"
+)
+
+print("--- Successful ANOVA Result ---")
+print(successful_result)
+```
+
+The result is a tidy data frame. The p.value for the Species term is extremely small ($p \< .001$), indicating a highly significant result. This confirms that the function is working correctly.
+
+### Demonstrate a Graceful Error Handling
+
+A key feature of a robust pipeline is the ability to handle invalid data without crashing. Here, we test the function on a dataset that has been filtered to contain only one Species. This does not meet the requirements for an ANOVA.
+
+```{r}
+# --- Demonstrate graceful failure on invalid data ---
+
+iris_setosa_only <- filter(iris, Species == "setosa")
+
+failed_result <- run_anova_analysis(
+  data = iris_setosa_only, 
+  dv_col = "Sepal.Length", 
+  group_col = "Species"
+)
+
+print("--- Graceful Failure Result ---")
+print(failed_result)
+```
+
+As expected, the function does not crash or return a complex traceback. Instead, it returns the user-friendly error message that we defined, confirming that the data validation step is working correctly. This demonstrates robust error handling.
