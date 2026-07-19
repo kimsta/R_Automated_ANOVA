@@ -1,15 +1,26 @@
-# R-Automated-ANOVA
+# Automated Statistical Pipeline: ANOVA Inference Engine
 
-This repository contains a single R Markdown file that demonstrates a robust function for automating a simple one-way ANOVA.
+## Overview
+A reproducible R-based analytical pipeline designed to automate Analysis of Variance (ANOVA) modeling. This repository extracts the core analytical logic from a proprietary biomedical data pipeline to demonstrate programmatic data validation, automated statistical testing, and structured output generation.
 
-## Purpose
+## Pipeline Architecture
+The engine is designed to minimize manual analytical overhead while enforcing strict statistical rigor:
 
-This project is a public, simplified demonstration of the core logic from a more complex, confidential statistical pipeline I developed.
+* **Algorithmic Data Validation:** Enforces strict structural constraints and checks statistical assumptions (e.g., variance homogeneity, normality) prior to model execution.
+* **Error Handling & Routing:** Implements robust fallback mechanisms and programmatic routing to handle malformed inputs or violated assumptions without crashing the runtime environment.
+* **Standardized Output:** Leverages the `broom` package to transform complex statistical model objects into tidy, machine-readable data frames for downstream consumption.
 
-The goal is to showcase a function that not only performs the analysis correctly but also includes built-in data validation and graceful error handling. The output is formatted into a clean, tidy table using the `broom` package.
+## Execution
 
-## How to Run
+### Tech Stack
+* **R:** Core statistical runtime.
+* **Tidyverse:** Data manipulation and structural transformations.
+* **broom & rstatix:** Model tidying and statistical summary generation.
+* **R Markdown:** Pipeline orchestration and report compilation.
 
-1.  Download the `.Rmd` file.
-2.  Open it in RStudio.
-3.  Click the **`Knit`** button at the top of the script to generate the complete HTML report.
+### Run the Pipeline
+The logic is encapsulated in a reproducible R Markdown document.
+
+1. Download the `Automated_ANOVA.Rmd` source file.
+2. Open the file in RStudio or an equivalent R environment.
+3. Execute the `Knit` command to compile the source code, run the data validation algorithms, and generate the final structured HTML report.
